@@ -1,43 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
+import produce from 'immer';
+import { connect } from 'react-redux';
+import { UploadActions } from '../redux/actionCreators';
 
 const Main = (props) => {
+  console.log(props);
   const [file, setFile] = useState([]);
-  console.log(file);
   const handleClick = () => {
     props.history.push('/upload');
   };
 
+  // upload-server 를 이용한 파일 업로드
   const handleInput = (e) => {
-    // console.log(e.target.files);
-    const { name, type } = e.target.files[0];
-    let form = new FormData();
-    form.append('file', name);
-    form.append('data', type);
+    for (let item of e.target.files) {
+      let form = new FormData();
+      form.append('file', item.name);
+      form.append('data', item);
 
-    axios({
-      method: 'post',
-      url: 'http://10.130.221.168:8090',
-      data: form,
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
-      .then(() => {
-        setFile(file.concat(e.target.files[0]));
+      axios({
+        method: 'post',
+        url: 'http://10.130.221.168:8090',
+        data: form,
+        headers: { 'Content-Type': 'multipart/form-data' },
       })
-      .catch((err) => {
-        console.log(err);
-      });
+        .then(() => {
+          // immer produce 적용
+          setFile(
+            produce((draft) => {
+              const isOverlap = draft.find((el) => item.name === el.name);
+              isOverlap
+                ? draft.splice(
+                    draft.findIndex((el) => item.name === el.name),
+                    1
+                  )
+                : draft.push(item);
+              isOverlap && draft.push(item);
+            })
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
-
   return (
     <div>
       <div>여기는 메인 페이지야</div>
       <div style={{ margin: '20px auto' }}>
-        <input style={{ width: '400px' }} type="file" onChange={handleInput} />
+        <form encType="multipart/form-data">
+          <input
+            multiple
+            style={{ width: '400px' }}
+            type="file"
+            onChange={handleInput}
+          />
+        </form>
       </div>
+      <div>파일 리스트</div>
       {file.map((item, i) => (
         <div style={{ margin: '5px auto', color: 'red' }} key={i}>
-          {item.name}
+          {`${i + 1}. ${item.name}`}
         </div>
       ))}
       <button onClick={handleClick}>뒤로가기</button>
@@ -45,4 +68,9 @@ const Main = (props) => {
   );
 };
 
-export default Main;
+const mapStateToProps = (state) => {
+  // console.log(state.upload);
+  return state;
+};
+
+export default connect(mapStateToProps, UploadActions)(Main);

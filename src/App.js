@@ -4,6 +4,7 @@ function App() {
   const [countTomato, setCountTomato] = useState(0);
   const [countApple, setCountApple] = useState(0);
   const appleWorker = new Worker('./workers/apple.js');
+  console.log(appleWorker);
   useEffect(() => {
     // 워커가 전달한 메시지
     appleWorker.onmessage = (event) => {
