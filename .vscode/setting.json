@@ -1,0 +1,24 @@
+{
+  "workbench.iconTheme": "material-icon-theme",
+  "editor.renameOnType": true,
+  "explorer.confirmDelete": false,
+  "editor.minimap.enabled": false,
+  "window.zoomLevel": 1,
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.formatOnSave": false,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.alwaysShowStatus": true,
+  "files.autoSave": "onFocusChange",
+  "editor.tabSize": 2,
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  }
+}

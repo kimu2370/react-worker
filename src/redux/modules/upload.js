@@ -1,45 +1,42 @@
 import { createAction, handleActions } from 'redux-actions';
 import produce from 'immer';
 
-const GET_FILE_LIST = 'GET_FILE_LIST';
-const IS_LOADING = 'IS_LOADING';
-const FILE_SIZE = 'FILE_SIZE';
-const GET_FILE = 'GET_FILE';
+// const FILE_COUNT = 'FILE_COUNT';
+const ADD_FILE = 'ADD_FILE';
+const COMPLETE_UPLOAD = 'COMPLETE_UPLOAD';
+const SHOW_PROGRESS = 'SHOW_PROGRESS';
 
-const initialState = {
-  list: [],
-  isLoading: false,
-  filename: '',
-  content: '',
-  size: 0,
-};
+const initialState = [];
 
-export const getFileList = createAction(GET_FILE_LIST);
-export const isLoading = createAction(IS_LOADING);
-export const fileSize = createAction(FILE_SIZE);
-export const getFile = createAction(GET_FILE);
+// export const fileCount = createAction(FILE_COUNT);
+export const addFile = createAction(ADD_FILE);
+export const completeUpload = createAction(COMPLETE_UPLOAD);
+export const showProgress = createAction(SHOW_PROGRESS);
 
 export default handleActions(
   {
-    [GET_FILE_LIST]: (state, { payload: list }) => {
-      produce(state, (draft) => {
-        draft.list = list;
+    [ADD_FILE]: (state, { payload: file }) => {
+      return produce(state, (draft) => {
+        const isOverlap = draft.find((el) => file.filename === el.filename);
+        isOverlap
+          ? draft.splice(
+              draft.findIndex((el) => file.filename === el.filename),
+              1
+            )
+          : draft.push(file);
+        isOverlap && draft.push(file);
       });
     },
-    [IS_LOADING]: (state, { payload: isLoading }) => {
-      produce(state, (draft) => {
-        draft.isLoading = isLoading;
+    [COMPLETE_UPLOAD]: (state, { payload: isUpLoading }) => {
+      return produce(state, (draft) => {
+        draft.isUpLoading = isUpLoading;
       });
     },
-    [FILE_SIZE]: (state, { payload: size }) => {
-      console.log(size);
-      produce(state, (draft) => {
-        draft.size = size;
-      });
-    },
-    [GET_FILE]: (state, { payload: file }) => {
-      produce(state, (draft) => {
-        draft.file = file;
+    [SHOW_PROGRESS]: (state, action) => {
+      console.log(state);
+      console.log(action);
+      return produce(state, (draft) => {
+        console.log(1);
       });
     },
   },
