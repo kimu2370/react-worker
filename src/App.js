@@ -4,20 +4,23 @@ function App() {
   const [countTomato, setCountTomato] = useState(0);
   const [countApple, setCountApple] = useState(0);
   const appleWorker = new Worker('./workers/apple.js');
-  console.log(appleWorker);
+  // console.log(appleWorker);
   useEffect(() => {
     // 워커가 전달한 메시지
     appleWorker.onmessage = (event) => {
-      // console.log('appleworker', event);
+      console.log('onMsg', event.data);
       if (event && event.data) {
         setCountApple(event.data);
       }
     };
-  }, [appleWorker]);
+  }, [appleWorker, countTomato]);
 
-  function incApple() {
-    // 워커에게 작업 부여
-    appleWorker.postMessage({ msg: 'incApple', countApple: countApple });
+  function doWorker() {
+    // 클릭 => 워커에게 작업 부여
+    appleWorker.postMessage({
+      msg: 'incremnet apple of count',
+      countApple: countApple,
+    });
   }
 
   return (
@@ -29,13 +32,17 @@ function App() {
 
         <div className="ion-padding-top">
           <button
-            onClick={() => setCountTomato(countTomato + 1)}
+            onClick={() =>
+              setInterval(() => {
+                setCountTomato(countTomato + 1);
+              }, 1000)
+            }
             color="primary"
           >
             Tomato
           </button>
 
-          <button onClick={() => incApple()} color="secondary">
+          <button onClick={() => doWorker()} color="secondary">
             Apple
           </button>
         </div>
