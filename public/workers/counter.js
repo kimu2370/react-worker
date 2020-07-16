@@ -1,6 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-restricted-globals */
 
+// console.log(self);
+// console.log(window);
+
 // add count
 self.onmessage = function (event) {
   let message = {};

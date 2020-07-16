@@ -36,13 +36,13 @@ const App = () => {
   const counterWorker = new Worker('workers/counter.js');
   const fasterWorker = new Worker('workers/faster.js');
 
-  // counterWorker에게 작업을 부여
+  // counterWorker의 메시지를 수신한다.
   counterWorker.onmessage = function (event) {
     const { count, stop, limit } = event.data;
     setCounter({ count, stop, limit });
   };
 
-  // fasterWorker에게 작업을 부여
+  // fasterWorker의 메시지를 수신한다.
   fasterWorker.onmessage = function (event) {
     const { count, stop, limit } = event.data;
     setFaster({ count, stop, limit });
